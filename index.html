@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <link rel="stylesheet" href="style.css" />
+    <script
+      src="https://kit.fontawesome.com/c064a9b659.js"
+      crossorigin="anonymous"
+    ></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Star - music</title>
+  </head>
+  <body>
+    <div class="container">
+      <nav class="sidebar">
+        <div class="nav-logo">
+          <i class="fa-brands fa-spotify"></i>
+        </div>
+        <div class="nav-library">
+          <i class="fa-solid fa-book"></i>
+          <p>Sua Biblioteca +</p>
+        </div>
+        <div class="nav-playlist">
+          <h5>Crie sua Primeira Playlist!</h5>
+          <button>Criar sua Playlist</button>
+        </div>
+        <div class="nav-podcast">
+          <h5>Que tal Seguir um Podcast?</h5>
+          <button>Explore Podcasts</button>
+        </div>
+        <div class="nav-footer">
+          <a href="#">Legal</a>
+          <a href="#">Segurança e privacidade</a>
+          <a href="#">Política de privacidade</a>
+          <a href="#">Cookies</a>
+          <a href="#">Sobre anúncios</a>
+          <a href="#">Acessibilidade</a>
+        </div>
+        <button class="nav-lang-button">
+          <i class="fa-solid fa-globe"></i>
+          Português do Brasil
+        </button>
+      </nav>
+      <main>
+        <header class="search-bar">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input placeholder="O que você quer ouvir agora?" />
+        </header>
+        <section class="content">
+          <h2>Artistas Populares</h2>
+          <div class="artists-grid">
+            <!--Inserir dados com JS-->
+          </div>
+          <h2>Álbuns Populares</h2>
+          <div class="albums-grid">
+            <!--Inserir dados com JS-->
+          </div>
+          <h2 class>Músicas Populares</h2>
+          <div class="musics-grid">
+            <!---Inserir dados no JS--->
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <div class="music-player" style="display: none">
+      <p class="music-name"></p>
+      <p class="artist-name"></p>
+      <button class="play-pause-btn">Play</button>
+      <input type="range" class="progress-bar" value="0" max="100" />
+      <input type="range" class="volume-control" value="100" max="100" />
+    </div>
+  </body>
+  <script src="./script.js"></script>
+</html>
