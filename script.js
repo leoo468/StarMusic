@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
     {
       name: "13 Lentes de um Final Feliz",
       artist: "Young Lixo",
-      image: "./img/13lentes.jpg",
+      image: "./img/lentes.jpg",
     },
     {
       name: "Pablo Honey",
@@ -36,6 +36,14 @@ document.addEventListener("DOMContentLoaded", () => {
       name: "Demon Days",
       artist: "Gorillaz",
       image: "./img/demonDays.jpg",
+      musics: [
+        {
+          name: "Feel Good Inc.",
+          artist: "Gorillaz",
+          image: "./img/demonDays.jpg",
+          audio: "./music/feel-good-inc.mp3",
+        },
+      ],
     },
     {
       name: "Twilight",
@@ -44,8 +52,35 @@ document.addEventListener("DOMContentLoaded", () => {
     },
     {
       name: "Validation",
-      artist: "Young Lixo",
+      artist: "Yung Lixo",
       image: "./img/validation.jpg",
+      musics: [
+        {
+          name: "Sucesso FM",
+          audio: "./music/sucessoFM.mp3",
+          artist: "Yung Lixo",
+        },
+        {
+          name: "Rumo à vitória",
+          audio: "./music/rumo-a-vitoria.mp3",
+          artist: "Yung Lixo",
+        },
+        {
+          name: "Goddamn",
+          audio: "./music/goddamn.mp3",
+          artist: "Yung Lixo",
+        },
+      ],
+    },
+    {
+      name: "Notion",
+      artist: "The Rare Occasions",
+      image: "./img/notion.jpg",
+    },
+    {
+      name: "Akeboshi",
+      artist: "Akeboshi",
+      image: "./img/akeboshi.jpg",
     },
   ];
 
@@ -59,6 +94,22 @@ document.addEventListener("DOMContentLoaded", () => {
   const volumeControl = document.querySelector(".volume-control");
   const musicNameElement = document.querySelector(".music-name");
   const artistNameElement = document.querySelector(".artist-name");
+
+  const profileIcon = document.getElementById("profileIcon");
+  const profileModal = document.getElementById("profileModal");
+  const editProfileModal = document.getElementById("editProfileModal");
+  const closeModal = document.getElementById("closeModal");
+  const closeEditModal = document.getElementById("closeEditModal");
+  const editProfileBtn = document.getElementById("editProfileBtn");
+  const bannerInput = document.getElementById("bannerInput");
+  const avatarInput = document.getElementById("avatarInput");
+  const bannerImage = document.getElementById("bannerImage");
+  const avatarImage = document.getElementById("avatarImage");
+  const editBannerBtn = document.getElementById("editBannerBtn");
+  const editAvatarBtn = document.getElementById("editAvatarBtn");
+  const editProfileForm = document.getElementById("editProfileForm");
+  const profileName = document.getElementById("profileName");
+  const profileEmail = document.getElementById("profileEmail");
 
   let currentAudio = null;
   let isPlaying = false;
@@ -80,6 +131,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     albumCard.innerHTML = `<img src="${album.image}" alt="${album.name}">
     <p>${album.name}</p>`;
+
+    albumCard.addEventListener("click", () => {
+      localStorage.setItem("currentAlbum", JSON.stringify(album));
+      window.location.href = "album.html";
+    });
 
     albumsGrid.appendChild(albumCard);
   });

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Detalhes do Álbum</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="albumContainer">
+      <a href="index.html"
+        ><button id="goBack" class="goBackBtn">Voltar para Início</button></a
+      >
+      <div id="albumDetails">
+        <div class="album-header">
+          <img id="albumImage" src="" alt="Capa do Álbum" />
+          <div class="album-info">
+            <h1 id="albumName"></h1>
+            <h2 id="albumArtist"></h2>
+          </div>
+        </div>
+
+        <div id="songsList">
+          <h3>Músicas do Álbum</h3>
+          <ul id="songs"></ul>
+        </div>
+
+        <div id="musicPlayer" class="music-player" style="display: none">
+          <div class="player-info">
+            <img id="currentSongImage" src="" alt="Capa da Música" />
+            <div class="music-details">
+              <p id="currentSongName">Nome da Música</p>
+              <p id="currentSongArtist">Artista</p>
+              <div id="timeInfo">
+                <span id="currentTime">00:00</span> /
+                <span id="totalTime">00:00</span>
+              </div>
+            </div>
+          </div>
+          <div class="player-controls">
+            <button id="playPauseBtn" class="play-pause-btn">Play</button>
+            <input
+              type="range"
+              id="progressBar"
+              class="progress-bar"
+              value="0"
+              max="100"
+            />
+            <input
+              type="range"
+              id="volumeControl"
+              class="volume-control"
+              value="100"
+              max="100"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="album.js"></script>
+  </body>
+</html>
