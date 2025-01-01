@@ -8,6 +8,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const musicsData = [
     {
+      name: "End of the World",
+      image: "./img/end-of-the-world.jpg",
+      artist: "Coda",
+      audio: "./music/end-of-the-world.mp3",
+    },
+    {
       name: "Rumo à vitória",
       image: "./img/vitoria.jpg",
       artist: "Young Lixo",
@@ -23,61 +29,43 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const albumsData = [
     {
+      id: 1,
       name: "13 Lentes de um Final Feliz",
       artist: "Young Lixo",
       image: "./img/lentes.jpg",
     },
     {
+      id: 2,
       name: "Pablo Honey",
       artist: "Radio Head",
       image: "./img/creep.jpg",
     },
     {
-      name: "Demon Days",
-      artist: "Gorillaz",
-      image: "./img/demonDays.jpg",
-      musics: [
-        {
-          name: "Feel Good Inc.",
-          artist: "Gorillaz",
-          image: "./img/demonDays.jpg",
-          audio: "./music/feel-good-inc.mp3",
-        },
-      ],
+      id: 3,
+      name: "Stadium Arcadium",
+      artist: "Red Hot Chili Peppers",
+      image: "./img/stadium-arcadium.jpg",
     },
     {
+      id: 4,
       name: "Twilight",
       artist: "Bôa",
       image: "./img/twilight.jpg",
     },
     {
+      id: 5,
       name: "Validation",
-      artist: "Yung Lixo",
+      artist: "Young Lixo",
       image: "./img/validation.jpg",
-      musics: [
-        {
-          name: "Sucesso FM",
-          audio: "./music/sucessoFM.mp3",
-          artist: "Yung Lixo",
-        },
-        {
-          name: "Rumo à vitória",
-          audio: "./music/rumo-a-vitoria.mp3",
-          artist: "Yung Lixo",
-        },
-        {
-          name: "Goddamn",
-          audio: "./music/goddamn.mp3",
-          artist: "Yung Lixo",
-        },
-      ],
     },
     {
+      id: 6,
       name: "Notion",
       artist: "The Rare Occasions",
       image: "./img/notion.jpg",
     },
     {
+      id: 7,
       name: "Akeboshi",
       artist: "Akeboshi",
       image: "./img/akeboshi.jpg",
@@ -95,25 +83,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const musicNameElement = document.querySelector(".music-name");
   const artistNameElement = document.querySelector(".artist-name");
 
-  const profileIcon = document.getElementById("profileIcon");
-  const profileModal = document.getElementById("profileModal");
-  const editProfileModal = document.getElementById("editProfileModal");
-  const closeModal = document.getElementById("closeModal");
-  const closeEditModal = document.getElementById("closeEditModal");
-  const editProfileBtn = document.getElementById("editProfileBtn");
-  const bannerInput = document.getElementById("bannerInput");
-  const avatarInput = document.getElementById("avatarInput");
-  const bannerImage = document.getElementById("bannerImage");
-  const avatarImage = document.getElementById("avatarImage");
-  const editBannerBtn = document.getElementById("editBannerBtn");
-  const editAvatarBtn = document.getElementById("editAvatarBtn");
-  const editProfileForm = document.getElementById("editProfileForm");
-  const profileName = document.getElementById("profileName");
-  const profileEmail = document.getElementById("profileEmail");
-
   let currentAudio = null;
   let isPlaying = false;
 
+  // Renderiza artistas
   artistsData.forEach((artist) => {
     const artistCard = document.createElement("div");
     artistCard.classList.add("artist-card");
@@ -125,21 +98,24 @@ document.addEventListener("DOMContentLoaded", () => {
     artistGrid.appendChild(artistCard);
   });
 
+  // Renderiza álbuns e adiciona o redirecionamento
   albumsData.forEach((album) => {
     const albumCard = document.createElement("div");
     albumCard.classList.add("album-card");
 
-    albumCard.innerHTML = `<img src="${album.image}" alt="${album.name}">
-    <p>${album.name}</p>`;
+    albumCard.innerHTML = `
+      <img src="${album.image}" alt="${album.name}">
+      <p>${album.name}</p>`;
 
     albumCard.addEventListener("click", () => {
-      localStorage.setItem("currentAlbum", JSON.stringify(album));
-      window.location.href = "album.html";
+      // Redireciona para a página do álbum com o ID
+      window.location.href = `album.html?albumId=${album.id}`;
     });
 
     albumsGrid.appendChild(albumCard);
   });
 
+  // Renderiza músicas e adiciona funcionalidade de player
   musicsData.forEach((music) => {
     const musicCard = document.createElement("div");
     musicCard.classList.add("music-card");
@@ -148,9 +124,8 @@ document.addEventListener("DOMContentLoaded", () => {
     <p>${music.name}</p>`;
     musicGrid.appendChild(musicCard);
 
-    //Toca quando clica
+    // Toca a música ao clicar
     musicCard.addEventListener("click", () => {
-      //Pausa se ja tiver audio tocando
       if (currentAudio) {
         currentAudio.pause();
         currentAudio.currentTime = 0;
@@ -169,10 +144,8 @@ document.addEventListener("DOMContentLoaded", () => {
           isPlaying = true;
         })
         .catch((error) => {
-          console.error("Erro ao tocar o a musica", error);
+          console.error("Erro ao tocar a música", error);
         });
-
-      //Atualiza
 
       currentAudio.addEventListener("timeupdate", () => {
         if (currentAudio.duration > 0) {
@@ -182,15 +155,13 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       });
 
-      // Controlar volume
-
       volumeControl.addEventListener("input", () => {
         currentAudio.volume = volumeControl.value / 100;
       });
     });
   });
 
-  //Pause
+  // Controle de play/pause
   playPauseBtn.addEventListener("click", () => {
     if (isPlaying && currentAudio) {
       currentAudio.pause();
@@ -202,8 +173,6 @@ document.addEventListener("DOMContentLoaded", () => {
       isPlaying = true;
     }
   });
-
-  //Atualiza barra clicar
 
   progressBar.addEventListener("input", () => {
     if (currentAudio) {

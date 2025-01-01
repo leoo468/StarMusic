@@ -3,58 +3,220 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Detalhes do Álbum</title>
-    <link rel="stylesheet" href="style.css" />
+    <title>Album</title>
+    <script src="https://www.youtube.com/iframe_api"></script>
   </head>
   <body>
-    <div id="albumContainer">
-      <a href="index.html"
-        ><button id="goBack" class="goBackBtn">Voltar para Início</button></a
-      >
-      <div id="albumDetails">
-        <div class="album-header">
-          <img id="albumImage" src="" alt="Capa do Álbum" />
-          <div class="album-info">
-            <h1 id="albumName"></h1>
-            <h2 id="albumArtist"></h2>
-          </div>
-        </div>
+    <style>
+      /* Geral */
+      body {
+        color: #fff;
+        font-family: Arial, sans-serif;
+        background-color: #000;
+        padding: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+      }
 
-        <div id="songsList">
-          <h3>Músicas do Álbum</h3>
-          <ul id="songs"></ul>
-        </div>
+      .album-container {
+        max-width: 800px;
+        width: 100%;
+        text-align: center;
+        background-color: #242424;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
 
-        <div id="musicPlayer" class="music-player" style="display: none">
-          <div class="player-info">
-            <img id="currentSongImage" src="" alt="Capa da Música" />
-            <div class="music-details">
-              <p id="currentSongName">Nome da Música</p>
-              <p id="currentSongArtist">Artista</p>
-              <div id="timeInfo">
-                <span id="currentTime">00:00</span> /
-                <span id="totalTime">00:00</span>
-              </div>
-            </div>
+      /* Cabeçalho do álbum */
+      .album-header {
+        margin-bottom: 20px;
+      }
+
+      #albumImage {
+        width: 200px;
+        height: 200px;
+        object-fit: cover;
+        border-radius: 50%;
+        margin-bottom: 10px;
+        animation: rotate 20s linear infinite
+      }
+
+      #albumName {
+               font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 10px;
+      }
+
+      #albumArtist {
+        cursor: pointer;
+        font-size: 18px;
+        color: rgb(168, 168, 168);
+      }
+
+      /* Lista de músicas */
+      #songs {
+        list-style-type: none;
+        padding: 0;
+      }
+
+      .song-item {
+        font-size: 18px;
+        padding: 10px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        border-radius: 5px;
+      }
+
+      .song-item:hover {
+        background-color: #333333;
+      }
+
+      /* Estilo do botão de voltar */
+      .goBackBtn {
+        background-color: #007bff;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-top: 20px;
+      }
+
+      .goBackBtn:hover {
+        background-color: #0056b3;
+      }
+
+      /* Player de áudio */
+      .audioPlayerContainer {
+        display: none;
+        margin-top: 20px;
+        position: relative;
+      }
+
+      .player-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+      }
+
+      /* Estilizando a capa do álbum para ficar redonda e com animação de rotação */
+      .albumCover {
+        width: 60px;
+        height: 60px;
+        margin-right: 20px;
+        position: relative;
+        animation: rotate 10s linear infinite; /* Animação de rotação */
+      }
+
+      #albumCoverImage {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 50%; /* Tornando a capa redonda */
+      }
+
+      /* Estilo dos controles */
+      .audioControls {
+        margin-top: 10px;
+      }
+
+      .audioControlBtn {
+        background-color: #007bff;
+        color: white;
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin: 0 10px;
+        font-size: 18px;
+      }
+
+      .audioControlBtn:hover {
+        background-color: #0056b3;
+      }
+
+      /* Barra de progresso e tempo */
+      .audioProgress {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 10px;
+        align-items: center;
+      }
+
+      #progressBar {
+        width: 70%;
+        margin: 0 10px;
+      }
+
+      /* Controle de volume */
+      .volumeControl {
+        margin-top: 10px;
+      }
+
+      /* Animação de rotação da capa */
+      @keyframes rotate {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+    <div class="album-container">
+      <header class="album-header">
+        <img id="albumImage" src="" alt="Capa do álbum" />
+        <h1 id="albumName"></h1>
+        <p id="albumArtist"></p>
+      </header>
+
+      <ul id="songs">
+        <!-- As músicas serão carregadas aqui pelo JavaScript -->
+      </ul>
+
+      <button id="goBack" class="goBackBtn">Voltar</button>
+
+      <!-- Player do YouTube com controles fixos -->
+      <div id="audioPlayerContainer" class="audioPlayerContainer">
+        <div class="player-wrapper">
+          <!-- Imagem do álbum no canto esquerdo -->
+          <div id="albumCover" class="albumCover">
+            <img src="" alt="Capa do Álbum" id="albumCoverImage" />
           </div>
-          <div class="player-controls">
-            <button id="playPauseBtn" class="play-pause-btn">Play</button>
-            <input
-              type="range"
-              id="progressBar"
-              class="progress-bar"
-              value="0"
-              max="100"
-            />
-            <input
-              type="range"
-              id="volumeControl"
-              class="volume-control"
-              value="100"
-              max="100"
-            />
-          </div>
-        </div>
+
+          <!-- Player do YouTube -->
+          <div id="player" class="player"></div>
+
+          <!-- Player de Música -->
+<div class="music-player" id="musicPlayer" style="display: none;">
+  <!-- Miniatura do álbum -->
+  <div class="album-thumbnail">
+    <img id="albumThumbnail" src="" alt="Album Thumbnail">
+  </div>
+
+  <!-- Controles do player -->
+  <div class="player-controls">
+    <button class="play-pause-btn" id="playPauseBtn">Play</button>
+
+    <!-- Barra de progresso -->
+    <input type="range" class="progress-bar" id="progressBar" value="0" max="100">
+
+    <!-- Controles de volume -->
+    <input type="range" class="volume-control" id="volumeControl" value="100" max="100">
+
+    <!-- Nome da música e do artista -->
+    <div class="music-info">
+      <p id="musicName">Nome da música</p>
+      <p id="artistName">Nome do artista</p>
+    </div>
+  </div>
+</div>
+
+          
       </div>
     </div>
 

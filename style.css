@@ -91,6 +91,16 @@ body {
   background-color: #242424;
 }
 
+#musicPlayer {
+  margin: 20px;
+  text-align: center;
+}
+
+#musicPlayer iframe {
+  border-radius: 8px;
+  max-width: 100%;
+}
+
 .music-player {
   margin-top: 40px;
   background-color: #121212;
