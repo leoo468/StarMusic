@@ -1,3 +1,28 @@
+const toggleButton = document.getElementById("toggleSearch");
+const searchBar = document.getElementById("searchBar");
+
+// Alterna a barra de busca ao clicar no botão
+toggleButton.addEventListener("click", (event) => {
+  searchBar.classList.toggle("active");
+  toggleButton.classList.toggle("hidden");
+
+  if (searchBar.classList.contains("active")) {
+    searchBar.classList.remove("hidden");
+    searchBar.focus();
+  }
+});
+
+// Esconde a barra de busca ao clicar fora
+document.addEventListener("click", (event) => {
+  if (
+    !toggleButton.contains(event.target) &&
+    !searchBar.contains(event.target)
+  ) {
+    searchBar.classList.remove("active");
+    toggleButton.classList.remove("hidden");
+  }
+});
+
 document.addEventListener("DOMContentLoaded", () => {
   const artistsData = [
     { name: "Bôa", image: "./img/boa.jpg" },
@@ -14,9 +39,9 @@ document.addEventListener("DOMContentLoaded", () => {
       audio: "./music/end-of-the-world.mp3",
     },
     {
-      name: "Rumo à vitória",
+      name: "Rumo à Vitória",
       image: "./img/vitoria.jpg",
-      artist: "Young Lixo",
+      artist: "Yung Lixo",
       audio: "./music/rumo-a-vitoria.mp3",
     },
     {
@@ -24,6 +49,24 @@ document.addEventListener("DOMContentLoaded", () => {
       image: "./img/demonDays.jpg",
       artist: "Gorillaz",
       audio: "./music/feel-good-inc.mp3",
+    },
+  ];
+
+  const yunliData = [
+    {
+      name: "Rumo à Vitória",
+      image: "./img/vitoria.jpg",
+      audio: "./music/rumo-a-vitoria.mp3",
+    },
+    {
+      name: "Goddamn",
+      image: "./img/vitoria.jpg",
+      audio: "./music/goddamn.mp3",
+    },
+    {
+      name: "SucessoFM",
+      image: "./img/vitoria.jpg",
+      audio: "./music/sucessoFM.mp3",
     },
   ];
 
@@ -76,6 +119,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const albumsGrid = document.querySelector(".albums-grid");
   const musicGrid = document.querySelector(".musics-grid");
 
+  const yunliGrid = document.querySelector(".yunli-grid");
+
   const musicPlayer = document.querySelector(".music-player");
   const playPauseBtn = document.querySelector(".play-pause-btn");
   const progressBar = document.querySelector(".progress-bar");
@@ -115,6 +160,21 @@ document.addEventListener("DOMContentLoaded", () => {
     albumsGrid.appendChild(albumCard);
   });
 
+  // Renderiza músicas do Yunli
+  yunliData.forEach((music) => {
+    const yunliCard = document.createElement("div");
+    yunliCard.classList.add("yunli-card");
+
+    yunliCard.innerHTML = `<img src="${music.image}">
+    <p>${music.name}</p>`;
+    yunliGrid.appendChild(yunliCard);
+
+    // Adiciona funcionalidade de player para Yunli
+    yunliCard.addEventListener("click", () => {
+      playMusic(music);
+    });
+  });
+
   // Renderiza músicas e adiciona funcionalidade de player
   musicsData.forEach((music) => {
     const musicCard = document.createElement("div");
@@ -124,42 +184,43 @@ document.addEventListener("DOMContentLoaded", () => {
     <p>${music.name}</p>`;
     musicGrid.appendChild(musicCard);
 
-    // Toca a música ao clicar
     musicCard.addEventListener("click", () => {
-      if (currentAudio) {
-        currentAudio.pause();
-        currentAudio.currentTime = 0;
-        playPauseBtn.textContent = "Play";
-        isPlaying = false;
-      }
-
-      currentAudio = new Audio(music.audio);
-      currentAudio
-        .play()
-        .then(() => {
-          musicPlayer.style.display = "block";
-          musicNameElement.textContent = music.name;
-          artistNameElement.textContent = music.artist;
-          playPauseBtn.textContent = "Pause";
-          isPlaying = true;
-        })
-        .catch((error) => {
-          console.error("Erro ao tocar a música", error);
-        });
-
-      currentAudio.addEventListener("timeupdate", () => {
-        if (currentAudio.duration > 0) {
-          const progress =
-            (currentAudio.currentTime / currentAudio.duration) * 100;
-          progressBar.value = progress;
-        }
-      });
-
-      volumeControl.addEventListener("input", () => {
-        currentAudio.volume = volumeControl.value / 100;
-      });
+      playMusic(music);
     });
   });
+
+  function playMusic(music) {
+    // Pausa a música anterior, se houver
+    if (currentAudio) {
+      currentAudio.pause();
+      currentAudio.currentTime = 0;
+    }
+
+    // Cria o novo áudio e toca
+    currentAudio = new Audio(music.audio);
+    currentAudio.play();
+    isPlaying = true;
+
+    // Atualiza o player
+    musicPlayer.style.display = "block";
+    musicNameElement.textContent = music.name;
+    artistNameElement.textContent = music.artist;
+    playPauseBtn.textContent = "Pause";
+
+    // Atualiza o progresso
+    currentAudio.addEventListener("timeupdate", () => {
+      if (currentAudio.duration > 0) {
+        const progress =
+          (currentAudio.currentTime / currentAudio.duration) * 100;
+        progressBar.value = progress;
+      }
+    });
+
+    // Controle de volume
+    volumeControl.addEventListener("input", () => {
+      currentAudio.volume = volumeControl.value / 100;
+    });
+  }
 
   // Controle de play/pause
   playPauseBtn.addEventListener("click", () => {
