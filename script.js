@@ -2,7 +2,7 @@ const toggleButton = document.getElementById("toggleSearch");
 const searchBar = document.getElementById("searchBar");
 
 // Alterna a barra de busca ao clicar no botão
-toggleButton.addEventListener("click", (event) => {
+toggleButton.addEventListener("click", () => {
   searchBar.classList.toggle("active");
   toggleButton.classList.toggle("hidden");
 
@@ -89,12 +89,7 @@ document.addEventListener("DOMContentLoaded", () => {
       artist: "Red Hot Chili Peppers",
       image: "./img/stadium-arcadium.jpg",
     },
-    {
-      id: 4,
-      name: "Twilight",
-      artist: "Bôa",
-      image: "./img/twilight.jpg",
-    },
+    { id: 4, name: "Twilight", artist: "Bôa", image: "./img/twilight.jpg" },
     {
       id: 5,
       name: "Validation",
@@ -118,127 +113,138 @@ document.addEventListener("DOMContentLoaded", () => {
   const artistGrid = document.querySelector(".artists-grid");
   const albumsGrid = document.querySelector(".albums-grid");
   const musicGrid = document.querySelector(".musics-grid");
-
   const yunliGrid = document.querySelector(".yunli-grid");
-
-  const musicPlayer = document.querySelector(".music-player");
-  const playPauseBtn = document.querySelector(".play-pause-btn");
-  const progressBar = document.querySelector(".progress-bar");
-  const volumeControl = document.querySelector(".volume-control");
-  const musicNameElement = document.querySelector(".music-name");
-  const artistNameElement = document.querySelector(".artist-name");
 
   let currentAudio = null;
   let isPlaying = false;
 
-  // Renderiza artistas
-  artistsData.forEach((artist) => {
-    const artistCard = document.createElement("div");
-    artistCard.classList.add("artist-card");
+  function renderCards(data, container, type) {
+    data.forEach((item) => {
+      const card = document.createElement("div");
+      card.classList.add(`${type}-card`);
+      card.innerHTML = `<img src="${item.image}" alt="${item.name}"><p>${item.name}</p>`;
+      container.appendChild(card);
 
-    artistCard.innerHTML = `<img src="${artist.image}" alt="${artist.name}">
-    <h3>${artist.name}</h3>
-    <p>artista</p>`;
+      if (type === "album") {
+        card.addEventListener("click", () => {
+          window.location.href = `album.html?albumId=${item.id}`;
+        });
+      }
 
-    artistGrid.appendChild(artistCard);
-  });
-
-  // Renderiza álbuns e adiciona o redirecionamento
-  albumsData.forEach((album) => {
-    const albumCard = document.createElement("div");
-    albumCard.classList.add("album-card");
-
-    albumCard.innerHTML = `
-      <img src="${album.image}" alt="${album.name}">
-      <p>${album.name}</p>`;
-
-    albumCard.addEventListener("click", () => {
-      // Redireciona para a página do álbum com o ID
-      window.location.href = `album.html?albumId=${album.id}`;
+      if (type === "music" || type === "yunli") {
+        card.addEventListener("click", () => playMusic(item));
+      }
     });
+  }
 
-    albumsGrid.appendChild(albumCard);
-  });
+  renderCards(artistsData, artistGrid, "artist");
+  renderCards(albumsData, albumsGrid, "album");
+  renderCards(musicsData, musicGrid, "music");
+  renderCards(yunliData, yunliGrid, "yunli");
 
-  // Renderiza músicas do Yunli
-  yunliData.forEach((music) => {
-    const yunliCard = document.createElement("div");
-    yunliCard.classList.add("yunli-card");
-
-    yunliCard.innerHTML = `<img src="${music.image}">
-    <p>${music.name}</p>`;
-    yunliGrid.appendChild(yunliCard);
-
-    // Adiciona funcionalidade de player para Yunli
-    yunliCard.addEventListener("click", () => {
-      playMusic(music);
+  if (Notification.permission !== "granted") {
+    Notification.requestPermission().then((permission) => {
+      if (permission === "granted") {
+        console.log("Permissão concedida para notificação!");
+      }
     });
-  });
+  }
 
-  // Renderiza músicas e adiciona funcionalidade de player
-  musicsData.forEach((music) => {
-    const musicCard = document.createElement("div");
-    musicCard.classList.add("music-card");
+  function showMusicNotification() {
+    if (Notification.permission === "granted" && currentAudio) {
+      const musicName = document.querySelector(".music-name").textContent;
+      const artistName = document.querySelector(".artist-name").textContent;
 
-    musicCard.innerHTML = `<img src="${music.image}" alt="${music.name}">
-    <p>${music.name}</p>`;
-    musicGrid.appendChild(musicCard);
+      const currentTime = currentAudio.currentTime;
+      const duration = currentAudio.duration;
 
-    musicCard.addEventListener("click", () => {
-      playMusic(music);
-    });
-  });
+      const musicImage = document.querySelector("img").src;
+
+      const notification = new Notification("Música em reprodução", {
+        body: `${musicName} - ${artistName} | Tempo: ${formatTime(
+          currentTime
+        )} / ${formatTime(duration)}`,
+        icon: musicImage,
+        tag: "music-player",
+      });
+
+      setTimeout(() => {
+        notification.close();
+      }, 5000);
+    }
+  }
+  function formatTime(seconds) {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = Math.floor(seconds % 60);
+    return `${minutes}:${remainingSeconds < 10 ? "0" : ""}${remainingSeconds}`;
+  }
+
+  // Atualizar a notificação a cada segundo enquanto a música toca
+  setInterval(showMusicNotification, 1000);
 
   function playMusic(music) {
-    // Pausa a música anterior, se houver
     if (currentAudio) {
       currentAudio.pause();
       currentAudio.currentTime = 0;
     }
 
-    // Cria o novo áudio e toca
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "MediaTrackPrevious" || event.key === "Backspace")
+        if (currentAudio) {
+          currentAudio.currentTime = 0;
+          currentAudio.play();
+        }
+    });
+
     currentAudio = new Audio(music.audio);
     currentAudio.play();
     isPlaying = true;
+    document.querySelector(".music-player").style.display = "block";
+    document.querySelector(".music-name").textContent = music.name;
+    document.querySelector(".artist-name").textContent = music.artist;
+    document.querySelector(".play-pause-btn").textContent = "Pause";
 
-    // Atualiza o player
-    musicPlayer.style.display = "block";
-    musicNameElement.textContent = music.name;
-    artistNameElement.textContent = music.artist;
-    playPauseBtn.textContent = "Pause";
-
-    // Atualiza o progresso
     currentAudio.addEventListener("timeupdate", () => {
-      if (currentAudio.duration > 0) {
-        const progress =
-          (currentAudio.currentTime / currentAudio.duration) * 100;
-        progressBar.value = progress;
+      // Atualizando a barra de progresso
+      document.querySelector(".progress-bar").value =
+        (currentAudio.currentTime / currentAudio.duration) * 100;
+
+      // Atualizando o tempo atual e tempo restante
+      const currentTime = formatTime(currentAudio.currentTime);
+      const remainingTime = formatTime(currentAudio.duration);
+
+      document.querySelector(".current-time").textContent = currentTime;
+      document.querySelector(".remaining-time").textContent = remainingTime;
+    });
+
+    // Função para formatar o tempo em minutos e segundos
+    function formatTime(seconds) {
+      const minutes = Math.floor(seconds / 60);
+      const sec = Math.floor(seconds % 60);
+      return `${minutes}:${sec < 10 ? "0" + sec : sec}`;
+    }
+
+    document.querySelector(".volume-control").addEventListener("input", (e) => {
+      currentAudio.volume = e.target.value / 100;
+    });
+
+    document.querySelector(".play-pause-btn").addEventListener("click", () => {
+      if (isPlaying && currentAudio) {
+        currentAudio.pause();
+        document.querySelector(".play-pause-btn").textContent = "Play";
+        isPlaying = false;
+      } else if (currentAudio) {
+        currentAudio.play();
+        document.querySelector(".play-pause-btn").textContent = "Pause";
+        isPlaying = true;
       }
     });
 
-    // Controle de volume
-    volumeControl.addEventListener("input", () => {
-      currentAudio.volume = volumeControl.value / 100;
+    document.querySelector(".progress-bar").addEventListener("input", (e) => {
+      if (currentAudio) {
+        currentAudio.currentTime =
+          (e.target.value / 100) * currentAudio.duration;
+      }
     });
   }
-
-  // Controle de play/pause
-  playPauseBtn.addEventListener("click", () => {
-    if (isPlaying && currentAudio) {
-      currentAudio.pause();
-      playPauseBtn.textContent = "Play";
-      isPlaying = false;
-    } else if (currentAudio) {
-      currentAudio.play();
-      playPauseBtn.textContent = "Pause";
-      isPlaying = true;
-    }
-  });
-
-  progressBar.addEventListener("input", () => {
-    if (currentAudio) {
-      const progressTime = (progressBar.value / 100) * currentAudio.duration;
-      currentAudio.currentTime = progressTime;
-    }
-  });
 });

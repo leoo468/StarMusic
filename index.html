@@ -79,12 +79,18 @@
       </main>
     </div>
 
-    <div class="musicPlayer" style="display: none">
-      <p class="music-name"></p>
-      <p class="artist-name"></p>
+    <div class="music-player">
+      <div class="music-info">
+        <h3 class="music-name">Música</h3>
+        <p class="artist-name">Artista</p>
+      </div>
       <button class="play-pause-btn">Play</button>
       <input type="range" class="progress-bar" value="0" max="100" />
-      <input type="range" class="volume-control" value="100" max="100" />
+      <span class="current-time">00:00</span> /
+      <span class="remaining-time">00:00</span>
+
+      <input type="range" class="volume-control" value="50" max="100" />
+      <div class="emoji-container"></div>
     </div>
   </body>
   <script src="./script.js"></script>
