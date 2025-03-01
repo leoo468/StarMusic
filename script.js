@@ -170,7 +170,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       setTimeout(() => {
         notification.close();
-      }, 5000);
+      }, 1000);
     }
   }
   function formatTime(seconds) {
@@ -180,7 +180,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // Atualizar a notificação a cada segundo enquanto a música toca
-  setInterval(showMusicNotification, 1000);
 
   function playMusic(music) {
     if (currentAudio) {
